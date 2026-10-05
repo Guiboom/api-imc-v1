@@ -4,6 +4,9 @@ const app = express()
 const port = 3000
 app.use(express.json())
 
+//Função para calcular o imc
+function 
+
 app.get('/', (req, res) => {
   res.send('Hello World!')
 })
@@ -41,6 +44,16 @@ app.get('/paciente/:id', async(req, res) => {
         detalhes: error.message
     });
   }
+})
+
+app.post('/paciente',async(req,res)=>{
+    const {nome,idade,altura,peso}=req.body;
+    if(!nome||!idade||!altura||!peso){
+        res.status(400).json({
+        mensagem:"Bad request",
+        detalhes: error.message
+    });
+    }
 })
 
 app.listen(port, () => {
