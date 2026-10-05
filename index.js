@@ -2,6 +2,7 @@ const express = require('express');
 const db = require('./db')
 const app = express()
 const port = 3000
+app.use(express.json())
 
 app.get('/', (req, res) => {
   res.send('Hello World!')
@@ -11,11 +12,34 @@ app.get('/test', (req, res) => {
   res.send('Test executed')
 })
 
-app.get('/prontuarios', (req, res) => {
+app.get('/prontuarios', async(req, res) => {
   try {
-
+    const [rows]=await db.execute("SELECT * FROM pacientes")
+    res.status(200).json(rows)
   } catch (error) {
-    
+    res.status(500).json({
+        mensagem:"Internal Server Error",
+        detalhes: error.message
+    });
+  }
+})
+
+app.get('/paciente/:id', async(req, res) => {
+    const {id}=req.params;
+  try {
+    const [rows]=await db.execute("SELECT * FROM pacientes where id= ?",[id]);
+    if(rows.length===0){
+        res.status(404).json({
+        mensagem:"Patient not found",
+        detalhes: error.message
+    });
+    }
+    res.status(200).json(rows)
+  } catch (error) {
+    res.status(500).json({
+        mensagem:"Internal Server Error",
+        detalhes: error.message
+    });
   }
 })
 
