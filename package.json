@@ -1,0 +1,28 @@
+{
+  "name": "api-imc-v1",
+  "version": "1.0.0",
+  "description": "Aula de revisão Back-end",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Guiboom/api-imc-v1.git"
+  },
+  "keywords": [],
+  "author": "Guilherme Mantoanelli",
+  "license": "MIT",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Guiboom/api-imc-v1/issues"
+  },
+  "homepage": "https://github.com/Guiboom/api-imc-v1#readme",
+  "dependencies": {
+    "dotenv": "^18.0.5",
+    "express": "^5.2.1",
+    "mysql2": "^3.24.5",
+    "nodemon": "^3.1.14"
+  }
+}
