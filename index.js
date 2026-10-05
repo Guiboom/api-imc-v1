@@ -5,7 +5,21 @@ const port = 3000
 app.use(express.json())
 
 //Função para calcular o imc
-function 
+function calcularIMC (peso,altura){
+    const resultado = peso/(altura*altura)
+    const imc = parseFloat(resultado.toFixed(2));
+    let status=""
+    if(imc<18.5){
+        status="Abaixo do peso normal";
+    }else if(imc<25){
+        status="Peso normal";
+    }else if(imc<30){
+        status="Excesso de peso";
+    }else{
+        status="Obesidade";
+    }
+    return {imc,status}
+}
 
 app.get('/', (req, res) => {
   res.send('Hello World!')
@@ -52,8 +66,28 @@ app.post('/paciente',async(req,res)=>{
         res.status(400).json({
         mensagem:"Bad request",
         detalhes: error.message
-    });
+        });
     }
+    const {imc,status} = calcularIMC(Number(peso),Number(altura));
+    try{
+        const [resultado] = await db.execute("INSERT INTO pacientes (nome, idade, altura, peso, imc, status) VALUES (?,?,?,?,?,?);", [nome,idade,altura,peso,imc,status]);
+            res.status(201).json({
+                id:resultado.insertId,
+                nome,
+                idade,
+                altura,
+                peso,
+                imc,
+                status
+            });
+    }catch{
+        res.status(500).json({
+            mensagem:"Internal Server Error",
+            detalhes: error.message
+        });
+    }
+
+
 })
 
 app.listen(port, () => {
