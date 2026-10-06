@@ -90,34 +90,28 @@ app.post('/paciente',async(req,res)=>{
 
 })
 
-app.put('/paciente/id',async(req,res)=>{
-  const { id } = req.params;
-    const {nome,idade,altura,peso}=req.body;
-    if(!nome||!idade||!altura||!peso){
+app.put('/paciente/:id', async (req, res) => {
+    const { id } = req.params;
+    const { nome, idade, altura, peso } = req.body;
+    if (!nome || !idade || !altura || !peso) {
         res.status(400).json({
-          mensagem:"Bad request",
-          detalhes: error.message
-        });
-    }
-    const {imc,status} = calcularIMC(Number(peso),Number(altura));
-    try{
-        const [resultado] = await db.execute("INSERT INTO pacientes (nome, idade, altura, peso, imc, status) VALUES (?,?,?,?,?,?);", [nome,idade,altura,peso,imc,status]);
-            res.status(201).json({
-                id:resultado.insertId,
-                nome,
-                idade,
-                altura,
-                peso,
-                imc,
-                status
-            });
-    }catch{
-        res.status(500).json({
-            mensagem:"Internal Server Error",
+            mensagem: " Solicitação Inválida!",
             detalhes: error.message
         });
     }
-
+    const { imc, status } = calcularIMC(Number(peso), Number(altura));
+    try {
+        const [resultado] = await db.execute("UPDATE `pacientes` SET `nome` = ?, `idade` = ?, `altura` = ?, `peso` = ?, `imc` = ?, `status` = ? WHERE `pacientes`.`id` = ?;", [nome, idade, altura, peso, imc, status, id]);
+        if (resultado.affectedRows === 0) {
+            return res.status(404).json({ mensagem: "Paciente não encontrado!" });
+        }
+        res.status(200).json({ mensagem: "Paciente atualizado com sucesso." })
+    } catch (error) {
+        res.status(500).json({
+            mensagem: "Erro interno do servidor!",
+            detalhes: error.message
+        });
+    }
 
 })
 
